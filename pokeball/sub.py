@@ -8,9 +8,14 @@ def get_subscriber(host='localhost', port=5672, exchange='default',
     )
     channel = connection.channel()
     channel.exchange_declare(exchange=exchange, type=exchange_type)
-    result = channel.queue_declare(exclusive=exclusive)
-    queue = queue or result.method.queue
-    channel.queue_bind(exchange=exchange, queue=queue)
+
+    queue_declare_kwargs = {
+        "exclusive": exclusive
+    }
+    if queue is not None:
+        queue_declare_kwargs.update({"queue": queue})
+    result = channel.queue_declare(**queue_declare_kwargs)
+    channel.queue_bind(exchange=exchange, queue=result.method.queue)
 
     def start_consuming(func):
         def callback(ch, method, properties, message):
@@ -18,7 +23,7 @@ def get_subscriber(host='localhost', port=5672, exchange='default',
 
         channel.basic_consume(
             callback,
-            queue=queue,
+            queue=result.method.queue,
             no_ack=True
         )
         channel.start_consuming()
@@ -29,8 +34,8 @@ start_consuming = get_subscriber()
 
 start_consuming_exclusively = get_subscriber(exclusive=True)
 
-def start_consuming_from_queue(queue):
-    get_subscriber(queue=queue)()
+def start_consuming_from_queue(func, queue):
+    get_subscriber(queue=queue)(func)
 
-def start_consuming_exclusively_from_queue(queue):
-    get_subscriber(queue=queue, exclusive=True)()
+def start_consuming_exclusively_from_queue(func, queue):
+    get_subscriber(queue=queue, exclusive=True)(func)
