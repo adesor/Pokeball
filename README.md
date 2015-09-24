@@ -67,6 +67,6 @@ Or, you can use the shortcut function ```start_consuming_exclusively```
 If you also want to specify a queue and have it be exclusive to your consumer, you can specify the ```queue``` and ```exclusive``` parameters of ```get_subscriber```. Or, you can use the shortcut function ```start_consuming_exclusively_from_queue```
 
 ```python
->>> sub.start_consuming_exclusively_from_queue(foo, "test_queue"
+>>> sub.start_consuming_exclusively_from_queue(foo, "test_queue")
 
 ```
