@@ -4,6 +4,7 @@ Pokeball is a wrapper around pika (Python client for RabbitMQ). It provides func
 ## Installation
 Install pika
 ```$ pip install pika```
+
 Install pokeball
 ```$ pip install pokeball```
 
