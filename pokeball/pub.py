@@ -17,3 +17,5 @@ def get_message_sender(host='localhost', exchange='default', exchange_type='fano
         )
 
     return send_message
+
+send_message = get_message_sender()
