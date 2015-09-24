@@ -1,9 +1,9 @@
 import pika
 
 
-def get_message_sender(host='localhost', exchange='default', exchange_type='fanout'):
+def get_publisher(host='localhost', port=5672, exchange='default', exchange_type='fanout'):
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host=host)
+        pika.ConnectionParameters(host=host, port=port)
     )
     channel = connection.channel()
 
@@ -18,4 +18,4 @@ def get_message_sender(host='localhost', exchange='default', exchange_type='fano
 
     return send_message
 
-send_message = get_message_sender()
+send_message = get_publisher()
