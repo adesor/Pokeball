@@ -18,4 +18,4 @@ def get_publisher(host='localhost', port=5672, exchange='default', exchange_type
 
     return send_message
 
-send_message = get_message_sender()
+send_message = get_publisher()
