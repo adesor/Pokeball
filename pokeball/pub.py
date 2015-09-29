@@ -1,18 +1,18 @@
 import pika
 
 
-def get_publisher(host='localhost', port=5672, exchange='default', exchange_type='fanout'):
+def get_publisher(host='localhost', port=5672, exchange='default'):
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host=host, port=port)
     )
     channel = connection.channel()
 
-    channel.exchange_declare(exchange=exchange, type=exchange_type)
+    channel.sedeclare(exchange=exchange, type='topic')
 
-    def send_message(message):
+    def send_message(message, routing_key='#'):
         channel.basic_publish(
             exchange=exchange,
-            routing_key='',
+            routing_key=routing_key,
             body=message
         )
 

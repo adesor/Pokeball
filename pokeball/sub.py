@@ -2,12 +2,14 @@ import pika
 
 
 def get_subscriber(host='localhost', port=5672, exchange='default',
-                   exchange_type='fanout', queue=None, exclusive=False):
+                   binding_keys=['#'], queue=None, exclusive=False):
+    if not isinstance(binding_keys, list):
+        binding_keys = list(binding_keys)
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host=host)
     )
     channel = connection.channel()
-    channel.exchange_declare(exchange=exchange, type=exchange_type)
+    channel.exchange_declare(exchange=exchange, type='topic')
 
     queue_declare_kwargs = {
         "exclusive": exclusive
@@ -15,7 +17,13 @@ def get_subscriber(host='localhost', port=5672, exchange='default',
     if queue is not None:
         queue_declare_kwargs.update({"queue": queue})
     result = channel.queue_declare(**queue_declare_kwargs)
-    channel.queue_bind(exchange=exchange, queue=result.method.queue)
+
+    for binding_key in binding_keys:
+        channel.queue_bind(
+            exchange=exchange,
+            queue=result.method.queue,
+            routing_key=binding_key
+        )
 
     def start_consuming(func):
         def callback(ch, method, properties, message):
