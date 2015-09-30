@@ -78,8 +78,10 @@ If you also want to specify a queue and have it be exclusive to your consumer, y
 ## Routing messages
 By default, all messages go to all consumers. If you want to send messages selectively, you have to set a ```routing_key``` for the message.
 
+NOTE: If the ```routing_key``` is composed of multiple words, use a period (.) to separate them.
+
 ```python
->>> pub.send_message("This is a test message", routing_key='test_message')
+>>> pub.send_message("This is a test message", routing_key='this.is.a.routing.key')
 
 ```
 
@@ -87,7 +89,7 @@ On the subscriber side, you have to specify ```binding_keys```. If the ```routin
 ```binding_keys``` is a list containing the routing keys that the subscriber would accept. For example,
 
 ```python
->>> consume = sub.get_subscriber(binding_keys=['test_message'])
+>>> consume = sub.get_subscriber(binding_keys=['this.is.a.routing.key'])
 >>> consume(foo)
 
 ```
@@ -95,3 +97,16 @@ On the subscriber side, you have to specify ```binding_keys```. If the ```routin
 The ```binding_keys``` can have wildcards:
 - ```#``` (hash): placeholder for zero or more words
 - ```*``` (asterisk): placeholder for exactly one word
+
+Example:
+The following consume functions will accept the ```routing_key```: 'this_is_a_routing_key'
+```python
+>>> consume1 = sub.get_subscriber(binding_keys=['#'])
+>>> consume2 = sub.get_subscriber(binding_keys=['this.#'])
+>>> consume3 = sub.get_subscriber(binding_keys=['#.key'])
+>>> consume4 = sub.get_subscriber(binding_keys=['#.routing.*'])
+>>> consume5 = sub.get_subscriber(binding_keys=['#.routing.#'])
+>>> consume6 = sub.get_subscriber(binding_keys=['this.is.a.*.*'])
+>>> consume7 = sub.get_subscriber(binding_keys=['this.*.*.*.*'])
+
+```
