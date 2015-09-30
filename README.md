@@ -74,3 +74,24 @@ If you also want to specify a queue and have it be exclusive to your consumer, y
 >>> sub.start_consuming_exclusively_from_queue(foo, "test_queue")
 
 ```
+
+## Routing messages
+By default, all messages go to all consumers. If you want to send messages selectively, you have to set a ```routing_key``` for the message.
+
+```python
+>>> pub.send_message("This is a test message", routing_key='test_message')
+
+```
+
+On the subscriber side, you have to specify ```binding_keys```. If the ```routing_key``` matches with one of the ```binding_keys```, the message is received by the subscriber.
+```binding_keys``` is a list containing the routing keys that the subscriber would accept. For example,
+
+```python
+>>> consume = sub.get_subscriber(binding_keys=['test_message'])
+>>> consume(foo)
+
+```
+
+The ```binding_keys``` can have wildcards:
+- ```#``` (hash): placeholder for zero or more words
+- ```*``` (asterisk): placeholder for exactly one word
