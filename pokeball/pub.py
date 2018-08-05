@@ -7,7 +7,7 @@ def get_publisher(host='localhost', port=5672, exchange='default'):
         )
     channel = connection.channel()
 
-    channel.exchange_declare(exchange=exchange, type='topic')
+    channel.exchange_declare(exchange=exchange, exchange_type='topic')
 
     def send_message(message, routing_key='#'):
         channel.basic_publish(
