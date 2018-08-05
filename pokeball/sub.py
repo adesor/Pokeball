@@ -7,7 +7,7 @@ def get_subscriber(host='localhost', port=5672, exchange='default',
         binding_keys = list(binding_keys)
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=host))
     channel = connection.channel()
-    channel.exchange_declare(exchange=exchange, type='topic')
+    channel.exchange_declare(exchange=exchange, exchange_type='topic')
 
     queue_declare_kwargs = {
         "exclusive": exclusive
